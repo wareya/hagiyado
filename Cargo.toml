@@ -1,0 +1,16 @@
+[package]
+name = "hagiyado"
+version = "0.1.0"
+authors = ["wareya <wareya@gmail.com>"]
+
+[dependencies]
+rouille = "2.2.0"
+regex = "1"
+percent-encoding = "1.0.1"
+chrono = "0.4"
+chrono-tz = "0.5"
+scrypt = "0.2.0"
+rand = "0.5.5"
+ipnet = "2.0.0"
+sha3 = "0.8.0"
+lazy_static = "1.1.0"

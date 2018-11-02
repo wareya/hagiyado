@@ -1,0 +1,29 @@
+- the 1000 necessary administration functions
+-- password refreshing (not possible to bring your own password) (admins can only refresh their own passwords)
+-- password recovery factor (admins have email addresses on record, instructed to email a global admin?)
+-- adding and removing board-specific admins (limited to global admins)
+-- adding and removing global admins (limited to global admins) (root admin, i.e. the admin with the name "admin", cannot be removed, and admins cannot remove themselves)
+-- proper post content history for admins/mods to review (IMMUTABLE!!!)
+
+- reporting, filtering reports by sender ip, hiding reports from ips/ip ranges (basically soft-banning people from making reports)
+- board and thread names in head tag's title tag
+- some kind of tripcode system
+- IDs (board-level setting, on by default, refreshes when the thread cycles over)
+
+!!! - preban public botnets and known sources of spam
+!!! - DATABASE SERIALIZATION AND DESERIALIZATION!!!
+
+post-release:
+
+- board catalogs
+- ban explanation
+- temporary bans
+- give banned users a cookie that doesn't prevent them from posting but does track their posting events. show moderators when a post was from someone who is probably evading a ban. make sure it does not display if they were manually unbanned.
+- finish migrating to templates
+- load templates from files
+- remove all usages of unwrap()
+- replace get_mut() with get() where possible
+
+～～～realtime websockets json-driven RESTful integrated reality chatroom experience with blockchains and hookers～～～
+
+
