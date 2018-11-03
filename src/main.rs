@@ -2072,13 +2072,13 @@ fn main() -> Result<(), std::io::Error>
             {
                 let fields = session_cookie.rsplitn(2, ":").collect::<Vec<&str>>();
                 if fields.len() >= 2
-                { (fields[1].to_string(), server.get_board_admin_session_from_string(&fields[1].to_string(), &remote_ip, &fields[0].to_string())) }
+                { server.get_board_admin_session_from_string(&fields[1].to_string(), &remote_ip, &fields[0].to_string()) }
                 else
-                { ("".to_string(), None) }
+                { None }
             }
             else
             {
-                ("".to_string(), None)
+                None
             };
             
             let mut response = router!(request,
@@ -2106,13 +2106,13 @@ fn main() -> Result<(), std::io::Error>
                 },
                 (GET) (/{boardurl : String}/admin) =>
                 {
-                    let isboardadmin = boardurl == board_admin_session.0 && board_admin_session.1.is_some();
+                    let isboardadmin = board_admin_session.is_some() && board_admin_session.as_ref().unwrap().boardurl == boardurl;
                     
                     if let Some(ref sessdata) = global_admin_session
                     { server.generate_board_admin_page_for_session(&boardurl, sessdata.clone()) }
                     else if isboardadmin
                     {
-                        let sessdata = board_admin_session.1.clone().unwrap();
+                        let sessdata = board_admin_session.clone().unwrap();
                         server.generate_board_admin_page_for_session(&boardurl, sessdata.clone())
                     }
                     else
@@ -2120,13 +2120,13 @@ fn main() -> Result<(), std::io::Error>
                 },
                 (GET) (/{boardurl : String}/admin/) =>
                 {
-                    let isboardadmin = boardurl == board_admin_session.0 && board_admin_session.1.is_some();
+                    let isboardadmin = board_admin_session.is_some() && board_admin_session.as_ref().unwrap().boardurl == boardurl;
                     
                     if let Some(ref sessdata) = global_admin_session
                     { server.generate_board_admin_page_for_session(&boardurl, sessdata.clone()) }
                     else if isboardadmin
                     {
-                        let sessdata = board_admin_session.1.clone().unwrap();
+                        let sessdata = board_admin_session.clone().unwrap();
                         server.generate_board_admin_page_for_session(&boardurl, sessdata.clone())
                     }
                     else
@@ -2134,30 +2134,30 @@ fn main() -> Result<(), std::io::Error>
                 },
                 (POST) (/{boardurl : String}/admin/action/{action : String}) =>
                 {
-                    let isboardadmin = boardurl == board_admin_session.0 && board_admin_session.1.is_some();
+                    let isboardadmin = board_admin_session.is_some() && board_admin_session.as_ref().unwrap().boardurl == boardurl;
                     
                     if isadmin || action == "login"
                     { server.attempt_board_admin_action(&global_admin_session, &boardurl, &action, &remote_ip, request) }
                     else if isboardadmin
-                    { server.attempt_board_admin_action(&board_admin_session.1, &boardurl, &action, &remote_ip, request) }
+                    { server.attempt_board_admin_action(&board_admin_session, &boardurl, &action, &remote_ip, request) }
                     else
                     { rouille::Response::empty_404() }
                 },
                 (GET) (/{boardurl : String}) =>
                 {
-                    let isboardadmin = boardurl == board_admin_session.0 && board_admin_session.1.is_some();
+                    let isboardadmin = board_admin_session.is_some() && board_admin_session.as_ref().unwrap().boardurl == boardurl;
                     
                     server.board_frontpage(&boardurl, isadmin, isboardadmin)
                 },
                 (GET) (/{boardurl : String}/) =>
                 {
-                    let isboardadmin = boardurl == board_admin_session.0 && board_admin_session.1.is_some();
+                    let isboardadmin = board_admin_session.is_some() && board_admin_session.as_ref().unwrap().boardurl == boardurl;
                     
                     server.board_frontpage(&boardurl, isadmin, isboardadmin)
                 },
                 (GET) (/{boardurl : String}/{thread_id : u64}) =>
                 {
-                    let isboardadmin = boardurl == board_admin_session.0 && board_admin_session.1.is_some();
+                    let isboardadmin = board_admin_session.is_some() && board_admin_session.as_ref().unwrap().boardurl == boardurl;
                     
                     server.search(&boardurl, thread_id, isadmin, isboardadmin)
                 },
@@ -2167,7 +2167,7 @@ fn main() -> Result<(), std::io::Error>
                 },
                 (POST) (/{boardurl : String}/submit) =>
                 {
-                    let isboardadmin = boardurl == board_admin_session.0 && board_admin_session.1.is_some();
+                    let isboardadmin = board_admin_session.is_some() && board_admin_session.as_ref().unwrap().boardurl == boardurl;
                     
                     let mut data = try_or_400!(post_input!(request, {
                         title: String,
